@@ -1,4 +1,4 @@
-package gosimpleapi
+package main
 
 import (
 	"encoding/json"
