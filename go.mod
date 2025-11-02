@@ -1,4 +1,4 @@
-module github.com/AkulovNV/wit2-devops-project/go-simple-api
+module github.com/AkulovNV/wit2-devops-project
 
 go 1.22
 

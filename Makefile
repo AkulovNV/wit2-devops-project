@@ -4,7 +4,7 @@ VERSION ?= 1.0.0
 BINARY := app
 DOCKER_IMAGE := go-simple-api
 DOCKER_REGISTRY := ghcr.io/devops-mentor
-APP_DIR := go-simple-api
+APP_DIR := ./
 
 help:
 	@echo "Go Simple API - Makefile targets:"
