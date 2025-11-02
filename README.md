@@ -3,7 +3,7 @@
 ---
 
 ## 📁 СТРУКТУРА ПРОЕКТА
-
+```
 wit2-devops-project/
 ├── .github/
 │   ├── workflows/
