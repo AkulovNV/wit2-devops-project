@@ -129,6 +129,7 @@ jobs:
     permissions:
       contents: read
       security-events: write  # For uploading SARIF reports
+      actions: read  # For accessing workflow run information
 
     steps:
       - name: Checkout code
