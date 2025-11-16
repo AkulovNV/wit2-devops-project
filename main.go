@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -181,7 +182,7 @@ func GracefulShutdown(server *http.Server) {
 	}).Info("Shutdown signal received")
 
 	// Даем 15 секунд на graceful shutdown
-	ctx, cancel := signal.NotifyContext(nil, os.Interrupt)
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
 	done := make(chan struct{})
@@ -201,7 +202,8 @@ func GracefulShutdown(server *http.Server) {
 	}
 }
 
-func main() {
+// SetupServer настраивает и возвращает HTTP сервер
+func SetupServer() *http.Server {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -217,15 +219,18 @@ func main() {
 		log.SetLevel(level)
 	}
 
+	// Создаем новый mux вместо использования глобального
+	mux := http.NewServeMux()
+
 	// Регистрируем handlers с метриками
-	http.HandleFunc("/health", MetricsMiddleware(HealthHandler, "GET"))
-	http.HandleFunc("/api/version", MetricsMiddleware(VersionHandler, "GET"))
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/", NotFoundHandler)
+	mux.HandleFunc("/health", MetricsMiddleware(HealthHandler, "GET"))
+	mux.HandleFunc("/api/version", MetricsMiddleware(VersionHandler, "GET"))
+	mux.Handle("/metrics", promhttp.Handler())
+	mux.HandleFunc("/", NotFoundHandler)
 
 	server := &http.Server{
 		Addr:         ":" + port,
-		Handler:      http.DefaultServeMux,
+		Handler:      mux,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
@@ -235,6 +240,12 @@ func main() {
 		"port":    port,
 		"version": Version,
 	}).Info("Starting HTTP server")
+
+	return server
+}
+
+func main() {
+	server := SetupServer()
 
 	// Graceful shutdown
 	go GracefulShutdown(server)
