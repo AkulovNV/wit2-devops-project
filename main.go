@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -245,6 +246,16 @@ func SetupServer() *http.Server {
 }
 
 func main() {
+	// Parse command line flags
+	versionFlag := flag.Bool("version", false, "Print version and exit")
+	flag.Parse()
+
+	// If --version flag is provided, print version and exit
+	if *versionFlag {
+		fmt.Printf("Version: %s\n", Version)
+		os.Exit(0)
+	}
+
 	server := SetupServer()
 
 	// Graceful shutdown

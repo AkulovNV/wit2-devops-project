@@ -44,7 +44,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -o app main.go
 
 # Проверяем что бинарник создан и работает
-RUN ./app --version 2>&1 | grep -q "Version" || echo "Binary built successfully"
+RUN timeout 5 ./app --version || exit 1
 
 # ====================
 # Stage 2: Runtime
