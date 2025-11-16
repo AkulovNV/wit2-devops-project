@@ -1,5 +1,40 @@
 # GO SIMPLE API - Pet Project для DevOps Program
 
+> Практический проект для изучения DevOps: от кода до production в Kubernetes через GitOps
+
+[![CI/CD Pipeline](https://github.com/devops-mentor/wit2-devops-project/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/devops-mentor/wit2-devops-project/actions)
+[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/devops-mentor/wit2-devops-project/pkgs/container/wit2-devops-project)
+[![Go Version](https://img.shields.io/badge/go-1.23-00ADD8)](https://go.dev/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+---
+
+## 📚 УЧЕБНЫЕ МАТЕРИАЛЫ
+
+### Урок 2: CI/CD Pipeline & Docker ⬅ ТЕКУЩИЙ УРОК
+
+**Для студента:**
+- 📖 [LESSON-02.md](LESSON-02.md) - Теория и концепции (читать первым)
+- 💻 [LESSON-02-PRACTICE.md](LESSON-02-PRACTICE.md) - Практические задания
+- 📋 [CHEATSHEET-LESSON-02.md](CHEATSHEET-LESSON-02.md) - Быстрый справочник команд
+
+**Для ментора:**
+- 👨‍🏫 [LESSON-02-INSTRUCTOR.md](LESSON-02-INSTRUCTOR.md) - План проведения урока
+
+**Общее:**
+- 🗺️ [ROADMAP.md](ROADMAP.md) - План всех 5 уроков программы
+- 📁 [PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md) - Полная структура проекта
+
+### Что изучим в Уроке 2:
+- ✅ Проектирование CI/CD пайплайна
+- ✅ Matrix strategies (параллельные запуски)
+- ✅ Caching для ускорения builds
+- ✅ Docker multi-stage builds
+- ✅ Автоматический push в Container Registry
+- ✅ GitHub Actions secrets & permissions
+- ✅ Переиспользование кода (Composite Actions)
+- ✅ Стратегии версионирования (SemVer)
+
 ---
 
 ## 📁 СТРУКТУРА ПРОЕКТА
@@ -157,4 +192,156 @@ docker build -t go-simple-api:1.0.0 .
 
 # Check size
 docker images | grep go-simple-api
+```
+
+## ПОЛЕЗНЫЕ КОМАНДЫ
+
+### GitHub CLI (gh)
+
+```bash
+# Создать PR
+gh pr create --title "Title" --body "Description"
+
+# Список PR
+gh pr list
+
+# Merge PR
+gh pr merge 123 --merge
+
+# Создать release
+gh release create v1.0.0 --title "Release v1.0.0" --notes "Changes"
+
+# Просмотр workflow runs
+gh run list
+gh run view 123456
+
+# Логи workflow
+gh run view 123456 --log
+```
+
+### Trivy (Security Scanner)
+
+```bash
+# Установка (macOS)
+brew install trivy
+
+# Сканировать код
+trivy fs .
+
+# Сканировать Docker образ
+trivy image myapp:1.0.0
+
+# Только CRITICAL и HIGH
+trivy image --severity CRITICAL,HIGH myapp:1.0.0
+
+# JSON output
+trivy image -f json -o results.json myapp:1.0.0
+
+# SARIF для GitHub
+trivy image -f sarif -o trivy-results.sarif myapp:1.0.0
+```
+
+### Make (из Makefile)
+
+```bash
+# Помощь
+make help
+
+# Локальный запуск
+make run
+
+# Тесты
+make test
+make test-cover
+
+# Линтинг
+make lint
+make fmt-check
+
+# Docker
+make docker-build
+make docker-run
+make docker-push
+
+# Билд
+make build
+VERSION=2.0.0 make build  # С кастомной версией
+```
+
+---
+
+## DEBUGGING GITHUB ACTIONS
+
+### Локальный запуск (act)
+
+```bash
+# Установка
+brew install act
+
+# Запуск workflow
+act push
+
+# Конкретная job
+act -j test
+
+# С секретами
+act -s GITHUB_TOKEN=xxx
+
+# Dry run
+act -n
+```
+
+### Enable Debug Logging
+
+В GitHub Settings → Secrets добавить:
+- `ACTIONS_RUNNER_DEBUG` = `true`
+- `ACTIONS_STEP_DEBUG` = `true`
+
+### SSH в runner (при ошибке)
+
+```yaml
+- name: Setup tmate session
+  if: failure()
+  uses: mxschmitt/action-tmate@v3
+```
+
+---
+
+## SHORTCUTS
+
+### Context переменные
+
+```yaml
+${{ github.sha }}           # Commit SHA
+${{ github.ref }}           # refs/heads/main
+${{ github.ref_name }}      # main
+${{ github.actor }}         # username
+${{ github.repository }}    # owner/repo
+${{ runner.os }}            # Linux, macOS, Windows
+${{ runner.temp }}          # /tmp/...
+${{ secrets.GITHUB_TOKEN }} # Auto token
+```
+
+### Функции
+
+```yaml
+# Hash файлов
+${{ hashFiles('**/go.sum') }}
+
+# Форматирование строк
+${{ format('Hello {0}', 'World') }}
+
+# Условия
+${{ github.ref == 'refs/heads/main' }}
+
+# JSON
+${{ toJSON(matrix) }}
+${{ fromJSON('{"key": "value"}') }}
+
+# Contains
+${{ contains(github.ref, 'release') }}
+
+# StartsWith / EndsWith
+${{ startsWith(github.ref, 'refs/tags/v') }}
+${{ endsWith(github.ref, '-stable') }}
 ```

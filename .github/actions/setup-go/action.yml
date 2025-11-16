@@ -1,0 +1,45 @@
+name: 'Setup Go with Cache'
+description: 'Setup Go and cache modules for faster builds'
+author: 'DevOps Mentor'
+
+inputs:
+  go-version:
+    description: 'Go version to setup'
+    required: true
+    default: '1.23'
+
+  cache-dependency-path:
+    description: 'Path to go.sum file'
+    required: false
+    default: '**/go.sum'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Go ${{ inputs.go-version }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ inputs.go-version }}
+        cache: true
+
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ inputs.go-version }}-${{ hashFiles(inputs.cache-dependency-path) }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ inputs.go-version }}-
+          ${{ runner.os }}-go-
+
+    - name: Download dependencies
+      shell: bash
+      run: |
+        echo "Downloading Go dependencies..."
+        go mod download
+        echo "Dependencies downloaded successfully"
+
+branding:
+  icon: 'package'
+  color: 'blue'
