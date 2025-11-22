@@ -38,11 +38,11 @@ jobs:
       - name: Check code formatting
         run: |
           if [ -n "$(gofmt -l .)" ]; then
-            echo "❌ Code is not formatted. Run 'gofmt -w .'"
+            echo "Code is not formatted. Run 'gofmt -w .'"
             gofmt -l .
             exit 1
           fi
-          echo "✅ Code is properly formatted"
+          echo "Code is properly formatted"
 
       - name: Run go vet
         run: go vet ./...
@@ -51,12 +51,11 @@ jobs:
         run: |
           go mod tidy
           if [ -n "$(git status --porcelain)" ]; then
-            echo "❌ go.mod is not tidy. Run 'go mod tidy'"
+            echo "go.mod is not tidy. Run 'go mod tidy'"
             git diff
             exit 1
           fi
-          echo "✅ go.mod is tidy"
-
+          echo "go.mod is tidy"
   # ====================
   # Job 2: Matrix testing
   # ====================

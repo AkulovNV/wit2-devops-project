@@ -1,40 +1,32 @@
-# Multi-stage Docker build для Go приложения
-# Результат: образ размером ~15MB вместо 700MB+
+# Простой Dockerfile БЕЗ мультистейджа (для демонстрации)
 
-# ====================
-# Stage 1: Builder
-# ====================
-FROM golang:1.23-alpine AS builder
+FROM golang:1.23-alpine
 
-# Устанавливаем необходимые инструменты для сборки
+# Устанавливаем необходимые инструменты
 RUN apk add --no-cache git ca-certificates tzdata
 
-WORKDIR /build
+# Устанавливаем рабочую директорию
+WORKDIR /app
 
-# Копируем файлы зависимостей отдельно для лучшего кэширования
-# Если go.mod/go.sum не изменились, этот слой будет закэширован
+# Копируем файлы зависимостей
 COPY go.mod go.sum ./
 
-# Загружаем зависимости (будет закэширован если go.mod/go.sum не изменились)
+# Загружаем зависимости
 RUN go mod download
 RUN go mod verify
 
-# Копируем исходный код
+# Копируем весь исходный код
 COPY . .
 
-# Аргументы сборки (можно передать через --build-arg)
+# Аргументы сборки
 ARG VERSION=dev
 ARG BUILD_TIME
 ARG GIT_COMMIT
 
-# Собираем статический бинарник
-# CGO_ENABLED=0 - отключаем CGO для статической сборки
-# -a - пересобираем все пакеты
-# -installsuffix cgo - используем альтернативный install suffix
-# -ldflags - флаги линковки:
-#   -w - удаляем DWARF debug информацию
-#   -s - удаляем таблицу символов
-#   -X - внедряем переменные в код
+# Собираем приложение
+# ВАЖНО: Бинарник создается внутри образа golang:1.23-alpine
+# Это означает, что итоговый образ будет содержать:
+
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -a -installsuffix cgo \
     -ldflags="-w -s \
@@ -46,41 +38,17 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 # Проверяем что бинарник создан и работает
 RUN timeout 5 ./app --version || exit 1
 
-# ====================
-# Stage 2: Runtime
-# ====================
-FROM alpine:latest
-
-# Устанавливаем CA сертификаты для HTTPS запросов
-# и timezone data для корректной работы time.LoadLocation
-RUN apk --no-cache add ca-certificates tzdata
-
-# Создаем непривилегированного пользователя для безопасности
-RUN addgroup -g 1000 appuser && \
-    adduser -D -u 1000 -G appuser appuser
-
-WORKDIR /app
-
-# Копируем только необходимые файлы из builder stage
-COPY --from=builder --chown=appuser:appuser /build/app .
-
-# Переключаемся на непривилегированного пользователя
-USER appuser
-
 # Открываем порт приложения
 EXPOSE 8080
 
-# Health check для Docker и Kubernetes
+# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Метаданные образа
 LABEL maintainer="devops-mentor" \
-      description="Go Simple API - DevOps Training Project" \
+      description="Go Simple API - Simple Build (for demonstration)" \
       version="${VERSION}"
 
 # Запускаем приложение
 ENTRYPOINT ["/app/app"]
-
-# Можно передать аргументы при запуске:
-# docker run myapp --port 8080
