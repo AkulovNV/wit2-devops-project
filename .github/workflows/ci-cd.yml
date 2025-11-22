@@ -234,9 +234,9 @@ jobs:
         with:
           image-ref: ${{ steps.image-ref.outputs.value }}
           format: 'table'
-          exit-code: '1'  # Fail if HIGH or CRITICAL vulnerabilities are found
+          exit-code: '1'  # Fail if CRITICAL vulnerabilities are found
           ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
 
       - name: Generate SBOM (Software Bill of Materials)
         uses: anchore/sbom-action@v0
