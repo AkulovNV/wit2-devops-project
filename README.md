@@ -9,31 +9,8 @@
 
 ---
 
-## 📚 УЧЕБНЫЕ МАТЕРИАЛЫ
-
-### Урок 2: CI/CD Pipeline & Docker ⬅ ТЕКУЩИЙ УРОК
-
-**Для студента:**
-- 📖 [LESSON-02.md](LESSON-02.md) - Теория и концепции (читать первым)
-- 💻 [LESSON-02-PRACTICE.md](LESSON-02-PRACTICE.md) - Практические задания
-- 📋 [CHEATSHEET-LESSON-02.md](CHEATSHEET-LESSON-02.md) - Быстрый справочник команд
-
-**Для ментора:**
-- 👨‍🏫 [LESSON-02-INSTRUCTOR.md](LESSON-02-INSTRUCTOR.md) - План проведения урока
-
 **Общее:**
 - 🗺️ [ROADMAP.md](ROADMAP.md) - План всех 5 уроков программы
-- 📁 [PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md) - Полная структура проекта
-
-### Что изучим в Уроке 2:
-- ✅ Проектирование CI/CD пайплайна
-- ✅ Matrix strategies (параллельные запуски)
-- ✅ Caching для ускорения builds
-- ✅ Docker multi-stage builds
-- ✅ Автоматический push в Container Registry
-- ✅ GitHub Actions secrets & permissions
-- ✅ Переиспользование кода (Composite Actions)
-- ✅ Стратегии версионирования (SemVer)
 
 ---
 
