@@ -8,7 +8,7 @@ RUN apk add --no-cache git ca-certificates tzdata
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы зависимостей
+# Копируем файлы зависимостей (отдельно для лучшего кэширования)
 COPY go.mod go.sum ./
 
 # Загружаем зависимости
@@ -24,8 +24,7 @@ ARG BUILD_TIME
 ARG GIT_COMMIT
 
 # Собираем приложение
-# ВАЖНО: Бинарник создается внутри образа golang:1.23-alpine
-# Это означает, что итоговый образ будет содержать:
+# ВАЖНО: Бинарник создается внутри образа golang:1.23-alpine, что увеличивает размер итогового образа
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -a -installsuffix cgo \

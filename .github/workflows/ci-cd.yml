@@ -222,10 +222,17 @@ jobs:
             BUILD_TIME=${{ github.event.head_commit.timestamp }}
             GIT_COMMIT=${{ github.sha }}
 
+      - name: Prepare image reference for scanning
+        id: image-ref
+        run: |
+          IMAGE_REF=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" | tr '[:upper:]' '[:lower:]')
+          echo "value=${IMAGE_REF}" >> $GITHUB_OUTPUT
+          echo "Scanning image: ${IMAGE_REF}"
+
       - name: Run Trivy vulnerability scanner (Docker image)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          image-ref: ${{ steps.image-ref.outputs.value }}
           format: 'table'
           exit-code: '1'  # Fail if HIGH or CRITICAL vulnerabilities are found
           ignore-unfixed: true
@@ -234,7 +241,7 @@ jobs:
       - name: Generate SBOM (Software Bill of Materials)
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          image: ${{ steps.image-ref.outputs.value }}
           format: spdx-json
           output-file: sbom.spdx.json
 
