@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false  # Continue even if one test fails
       matrix:
-        go-version: ['1.21', '1.22', '1.23']
+        go-version: ['1.26', '1.25']
 
     steps:
       - name: Checkout code
