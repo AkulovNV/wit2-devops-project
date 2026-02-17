@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - feature/**  # For feature branches
   pull_request:
     branches:
       - main
@@ -44,7 +44,7 @@ jobs:
           fi
           echo "Code is properly formatted"
 
-      - name: Run go vet
+      - name: Run go vet (?)
         run: go vet ./...
 
       - name: Check go.mod tidiness
