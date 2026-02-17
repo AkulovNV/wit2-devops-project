@@ -1,6 +1,6 @@
 # Простой Dockerfile БЕЗ мультистейджа (для демонстрации)
 
-FROM golang:1.23-alpine
+FROM golang:1.26-alpine
 
 # Устанавливаем необходимые инструменты
 RUN apk add --no-cache git ca-certificates tzdata
@@ -24,7 +24,7 @@ ARG BUILD_TIME
 ARG GIT_COMMIT
 
 # Собираем приложение
-# ВАЖНО: Бинарник создается внутри образа golang:1.23-alpine, что увеличивает размер итогового образа
+# ВАЖНО: Бинарник создается внутри образа golang:1.26-alpine, что увеличивает размер итогового образа
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -a -installsuffix cgo \
