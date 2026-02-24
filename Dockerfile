@@ -23,6 +23,11 @@ ARG VERSION=dev
 ARG BUILD_TIME
 ARG GIT_COMMIT
 
+# Автоматические переменные BuildKit для multi-platform сборки
+# TARGETOS и TARGETARCH подставляются из --platform (linux/amd64, linux/arm64 и т.д.)
+ARG TARGETOS
+ARG TARGETARCH
+
 # Собираем статический бинарник
 # CGO_ENABLED=0 - отключаем CGO для статической сборки
 # -a - пересобираем все пакеты
@@ -31,7 +36,7 @@ ARG GIT_COMMIT
 #   -w - удаляем DWARF debug информацию
 #   -s - удаляем таблицу символов
 #   -X - внедряем переменные в код
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
     -a -installsuffix cgo \
     -ldflags="-w -s \
     -X main.Version=${VERSION} \
