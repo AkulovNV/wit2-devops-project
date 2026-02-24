@@ -202,6 +202,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha  # GitHub Actions cache
           cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
           build-args: |
             VERSION=${{ github.sha }}
             BUILD_TIME=${{ github.event.head_commit.timestamp }}
