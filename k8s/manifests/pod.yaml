@@ -1,39 +1,40 @@
-apiVersion: v1
-kind: Pod
-metadata:
-  name: go-simple-api
-  namespace: wit2-devops
-  labels:
-    app: go-simple-api
-spec:
-  imagePullSecrets:
-    - name: ghcr-credentials
-  containers:
-    - name: go-simple-api
-      image: ghcr.io/akulovnv/wit2-devops-project:latest
-      ports:
-        - containerPort: 8080
-      env:
-        - name: PORT
-          value: "8080"
-        - name: LOG_LEVEL
-          value: "info"
-      livenessProbe:
-        httpGet:
-          path: /health
-          port: 8080
-        initialDelaySeconds: 5
-        periodSeconds: 10
-      readinessProbe:
-        httpGet:
-          path: /health
-          port: 8080
-        initialDelaySeconds: 3
-        periodSeconds: 5
-      resources:
-        requests:
-          cpu: 50m
-          memory: 64Mi
-        limits:
-          cpu: 200m
-          memory: 128Mi
+---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: go-simple-api
+#   namespace: wit2-devops
+#   labels:
+#     app: go-simple-api
+# spec:
+#   imagePullSecrets:
+#     - name: ghcr-credentials
+#   containers:
+#     - name: go-simple-api
+#       image: ghcr.io/akulovnv/wit2-devops-project:latest
+#       ports:
+#         - containerPort: 8080
+#       env:
+#         - name: PORT
+#           value: "8080"
+#         - name: LOG_LEVEL
+#           value: "info"
+#       livenessProbe:
+#         httpGet:
+#           path: /health
+#           port: 8080
+#         initialDelaySeconds: 5
+#         periodSeconds: 10
+#       readinessProbe:
+#         httpGet:
+#           path: /health
+#           port: 8080
+#         initialDelaySeconds: 3
+#         periodSeconds: 5
+#       resources:
+#         requests:
+#           cpu: 50m
+#           memory: 64Mi
+#         limits:
+#           cpu: 200m
+#           memory: 128Mi
