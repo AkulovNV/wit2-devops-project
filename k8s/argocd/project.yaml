@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: wit2-devops
+  namespace: argocd
+spec:
+  description: WIT2 DevOps Training Project
+  sourceRepos:
+    - https://github.com/akulovnv/wit2-devops-project
+    - https://github.com/akulovnv/wit2-devops-project.git
+  destinations:
+    - namespace: wit2-devops
+      server: https://kubernetes.default.svc
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
