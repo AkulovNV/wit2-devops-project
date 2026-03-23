@@ -13,5 +13,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: wit2-devops
   syncPolicy:
+    automated:
+      enabled: true
     syncOptions:
       - CreateNamespace=true
+      - PruneLast=true
+      - SyncStrategy=Apply
